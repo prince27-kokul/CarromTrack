@@ -1,0 +1,17 @@
+export const colors = {
+  background: '#F4F1E8',
+  surface: '#FFFEFB',
+  ink: '#1B2C23',
+  muted: '#778279',
+  line: '#E9E1D2',
+  green: '#315E46',
+  greenDark: '#244934',
+  greenLight: '#E8EFE5',
+  gold: '#B88A45',
+  goldLight: '#F5EDD9',
+  red: '#B95E52',
+  redLight: '#F8ECE8',
+  navy: '#18342A',
+  navMuted: '#A7B5AA',
+  goldBright: '#D8B46A',
+};
