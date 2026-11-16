@@ -7,7 +7,7 @@ import { BoardIllustration } from '../components/BoardIllustration';
 import { MatchRow } from '../components/MatchRow';
 import { Body, Card, Eyebrow, Page, SectionTitle } from '../components/ui';
 import { TabKey } from '../components/BottomNav';
-import { colors } from '../theme';
+import { ThemePalette, useAppTheme } from '../theme';
 
 const HOME_TEAM_ID = 'team-harbor';
 
@@ -17,6 +17,8 @@ export function OverviewScreen({ data, onTab, onOpenMatch, onOpenPlayer }: {
   onOpenMatch: (id: string) => void;
   onOpenPlayer: (id: string) => void;
 }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const { width } = useWindowDimensions();
   const wide = width >= 1250;
   const homeTeam = data.teams.find((team) => team.id === HOME_TEAM_ID) ?? data.teams[0];
@@ -58,7 +60,7 @@ export function OverviewScreen({ data, onTab, onOpenMatch, onOpenPlayer }: {
           <View><Text style={styles.heroStatValue}>{winRate}<Text style={styles.heroStatSlash}>%</Text></Text><Text style={styles.heroStatLabel}>WIN RATE</Text></View>
           <View style={styles.form}>
             {teamMatches.filter((match) => getMatchResult(match) !== 'upcoming').slice(-3).reverse().map((match) => (
-              <View key={match.id} style={[styles.formDot, { backgroundColor: getMatchResult(match) === 'win' ? '#B98AFF' : getMatchResult(match) === 'loss' ? colors.red : colors.gold }]} />
+              <View key={match.id} style={[styles.formDot, { backgroundColor: getMatchResult(match) === 'win' ? colors.green : getMatchResult(match) === 'loss' ? colors.red : colors.gold }]} />
             ))}
             {played.length === 0 ? <Text style={styles.heroStatSlash}>—</Text> : null}
           </View>
@@ -124,20 +126,20 @@ export function OverviewScreen({ data, onTab, onOpenMatch, onOpenPlayer }: {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemePalette) => StyleSheet.create({
   topline: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 4 },
   dashboardColumns: { gap: 21 },
   dashboardColumnsWide: { flexDirection: 'row', alignItems: 'flex-start', gap: 24 },
   primaryColumn: { flex: 1, gap: 21, minWidth: 0 },
   secondaryColumn: { flex: 0.9, gap: 21, minWidth: 0 },
   greeting: { color: colors.ink, fontSize: 27, lineHeight: 35, fontWeight: '700', letterSpacing: -0.65, marginTop: 6 },
-  profile: { width: 44, height: 44, borderRadius: 16, backgroundColor: colors.greenDark, borderWidth: 1, borderColor: '#B57AFF70', alignItems: 'center', justifyContent: 'center' },
+  profile: { width: 44, height: 44, borderRadius: 16, backgroundColor: colors.greenDark, borderWidth: 1, borderColor: colors.accentBorder, alignItems: 'center', justifyContent: 'center' },
   profileText: { color: colors.goldBright, fontWeight: '900', fontSize: 11, letterSpacing: 0.6 },
   hero: {
     backgroundColor: colors.navy,
     borderRadius: 23,
     borderWidth: 1,
-    borderColor: '#A56AFF55',
+    borderColor: colors.accentBorder,
     padding: 22,
     gap: 19,
     shadowColor: colors.navy,
@@ -147,14 +149,14 @@ const styles = StyleSheet.create({
     elevation: 7,
   },
   heroTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  heroEyebrow: { color: '#D5B8FF' },
-  teamName: { color: '#FFFFFF', fontSize: 23, lineHeight: 30, fontWeight: '700', marginTop: 7 },
-  heroDivider: { height: 1, backgroundColor: '#B78AFF36' },
+  heroEyebrow: { color: '#E8D8FA' },
+  teamName: { color: colors.strongText, fontSize: 23, lineHeight: 30, fontWeight: '700', marginTop: 7 },
+  heroDivider: { height: 1, backgroundColor: colors.accentBorder },
   heroStats: { flexDirection: 'row', alignItems: 'center', gap: 17 },
-  heroStatValue: { color: '#FFFFFF', fontSize: 23, fontWeight: '800' },
-  heroStatSlash: { color: '#C6B9D8', fontSize: 14, fontWeight: '600' },
-  heroStatLabel: { color: '#C6B9D8', fontSize: 8, fontWeight: '800', letterSpacing: 0.6, marginTop: 4 },
-  heroStatSeparator: { height: 35, width: 1, backgroundColor: '#B78AFF45' },
+  heroStatValue: { color: colors.strongText, fontSize: 23, fontWeight: '800' },
+  heroStatSlash: { color: '#E2D6EF', fontSize: 14, fontWeight: '600' },
+  heroStatLabel: { color: '#E2D6EF', fontSize: 8, fontWeight: '800', letterSpacing: 0.6, marginTop: 4 },
+  heroStatSeparator: { height: 35, width: 1, backgroundColor: colors.accentBorder },
   form: { flex: 1, flexDirection: 'row', justifyContent: 'flex-end', gap: 5 },
   formDot: { width: 9, height: 9, borderRadius: 5 },
   quickStats: { flexDirection: 'row', gap: 10 },
@@ -162,13 +164,13 @@ const styles = StyleSheet.create({
   quickIcon: { color: colors.green, fontSize: 17 },
   quickValue: { color: colors.ink, fontSize: 21, fontWeight: '800' },
   quickLabel: { color: colors.muted, fontSize: 8, fontWeight: '800', letterSpacing: 0.6 },
-  nextCard: { backgroundColor: colors.greenDark, borderWidth: 1, borderColor: '#B57AFF55', borderRadius: 19, padding: 18, gap: 8, shadowColor: colors.greenDark, shadowOffset: { width: 0, height: 7 }, shadowOpacity: 0.34, shadowRadius: 14, elevation: 5 },
+  nextCard: { backgroundColor: colors.greenDark, borderWidth: 1, borderColor: colors.accentBorder, borderRadius: 19, padding: 18, gap: 8, shadowColor: colors.greenDark, shadowOffset: { width: 0, height: 7 }, shadowOpacity: 0.34, shadowRadius: 14, elevation: 5 },
   nextLabel: { flexDirection: 'row', justifyContent: 'space-between' },
-  nextLabelText: { color: '#E4D2FF', fontSize: 9, fontWeight: '900', letterSpacing: 1 },
-  nextArrow: { color: '#FFFFFF', fontSize: 17, lineHeight: 16 },
-  nextOpponent: { color: '#FFFFFF', fontSize: 16, fontWeight: '800' },
-  nextVs: { color: '#D1B5FF', fontWeight: '500' },
-  nextMeta: { color: '#E4D2FF', fontSize: 11 },
+  nextLabelText: { color: '#F0E5FB', fontSize: 9, fontWeight: '900', letterSpacing: 1 },
+  nextArrow: { color: colors.strongText, fontSize: 17, lineHeight: 16 },
+  nextOpponent: { color: colors.strongText, fontSize: 16, fontWeight: '800' },
+  nextVs: { color: '#E2D6EF', fontWeight: '500' },
+  nextMeta: { color: '#F0E5FB', fontSize: 11 },
   sectionWrap: { gap: 15 },
   listCard: { paddingVertical: 4, paddingHorizontal: 12 },
   lastRow: { borderBottomWidth: 0 },

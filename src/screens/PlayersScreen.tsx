@@ -4,11 +4,13 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { AppText as Text } from '../components/AppText';
 import { AppData, getTeamName } from '../data/seed';
 import { Body, Card, Chip, Eyebrow, Heading, Initials, Page, SearchField } from '../components/ui';
-import { colors } from '../theme';
+import { ThemePalette, useAppTheme } from '../theme';
 
 type RoleFilter = 'All' | 'Striker' | 'Pocket specialist' | 'All-rounder';
 
 export function PlayersScreen({ data, onOpenPlayer }: { data: AppData; onOpenPlayer: (id: string) => void }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const [search, setSearch] = useState('');
   const [teamFilter, setTeamFilter] = useState('All teams');
   const [roleFilter, setRoleFilter] = useState<RoleFilter>('All');
@@ -66,7 +68,7 @@ export function PlayersScreen({ data, onOpenPlayer }: { data: AppData; onOpenPla
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemePalette) => StyleSheet.create({
   header: { gap: 7, paddingTop: 4 },
   filterBlock: { gap: 9 },
   filterLabel: { color: colors.muted, fontSize: 8, fontWeight: '900', letterSpacing: 1.1 },

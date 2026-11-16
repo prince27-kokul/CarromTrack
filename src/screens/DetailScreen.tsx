@@ -5,7 +5,7 @@ import { AppData, getMatchResult, getTeamName, Match, Player, Team } from '../da
 import { formatDate } from '../data/format';
 import { MatchRow } from '../components/MatchRow';
 import { Body, Card, Eyebrow, Heading, Initials, Page, SectionTitle } from '../components/ui';
-import { colors } from '../theme';
+import { ThemePalette, useAppTheme } from '../theme';
 
 export type DetailRoute =
   | { kind: 'team'; id: string }
@@ -20,6 +20,8 @@ export function DetailScreen({ route, data, onBack, onOpenTeam, onOpenPlayer, on
   onOpenPlayer: (id: string) => void;
   onOpenMatch: (id: string) => void;
 }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const team = route.kind === 'team' ? data.teams.find((item) => item.id === route.id) : undefined;
   const player = route.kind === 'player' ? data.players.find((item) => item.id === route.id) : undefined;
   const match = route.kind === 'match' ? data.matches.find((item) => item.id === route.id) : undefined;
@@ -43,6 +45,8 @@ function TeamDetail({ team, data, onOpenPlayer, onOpenMatch }: {
   onOpenPlayer: (id: string) => void;
   onOpenMatch: (id: string) => void;
 }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const roster = data.players.filter((player) => player.teamId === team.id);
   const matches = data.matches.filter((item) => item.teamId === team.id).sort((a, b) => b.date.localeCompare(a.date));
   const played = matches.filter((item) => getMatchResult(item) !== 'upcoming');
@@ -91,6 +95,8 @@ function PlayerDetail({ player, data, onOpenTeam, onOpenMatch }: {
   onOpenTeam: (id: string) => void;
   onOpenMatch: (id: string) => void;
 }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const team = data.teams.find((item) => item.id === player.teamId);
   const winRate = player.matches > 0 ? Math.round((player.wins / player.matches) * 100) : 0;
   const teamMatches = data.matches.filter((item) => item.teamId === player.teamId).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 4);
@@ -136,6 +142,8 @@ function PlayerDetail({ player, data, onOpenTeam, onOpenMatch }: {
 }
 
 function MatchDetail({ match, data, onOpenTeam }: { match: Match; data: AppData; onOpenTeam: (id: string) => void }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const team = data.teams.find((item) => item.id === match.teamId);
   const result = getMatchResult(match);
   const statusLabel = result === 'upcoming' ? 'UPCOMING FIXTURE' : result === 'win' ? 'SEASON WIN' : result === 'loss' ? 'SEASON LOSS' : 'MATCH DRAW';
@@ -161,7 +169,7 @@ function MatchDetail({ match, data, onOpenTeam }: { match: Match; data: AppData;
             {result !== 'upcoming' ? <Text style={styles.finalLabel}>FINAL</Text> : <Text style={styles.finalLabel}>FIXTURE</Text>}
           </View>
           <View style={styles.scoreSide}>
-            <View style={[styles.teamBadge, { backgroundColor: colors.goldLight }]}><Text style={[styles.teamBadgeText, { color: '#A37231' }]}>{match.opponent.split(' ').map((part) => part[0]).slice(0, 2).join('').toUpperCase()}</Text></View>
+            <View style={[styles.teamBadge, { backgroundColor: colors.goldLight }]}><Text style={[styles.teamBadgeText, { color: colors.goldBright }]}>{match.opponent.split(' ').map((part) => part[0]).slice(0, 2).join('').toUpperCase()}</Text></View>
             <Text style={styles.scoreTeam} numberOfLines={1}>{match.opponent}</Text>
           </View>
         </View>
@@ -192,6 +200,8 @@ function MatchDetail({ match, data, onOpenTeam }: { match: Match; data: AppData;
 }
 
 function PlayerListItem({ player, team, onPress }: { player: Player; team: Team; onPress: () => void }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   return (
     <Pressable onPress={onPress}>
       <Card style={styles.playerItem}>
@@ -204,6 +214,8 @@ function PlayerListItem({ player, team, onPress }: { player: Player; team: Team;
 }
 
 function DetailStat({ value, label, light = false }: { value: string; label: string; light?: boolean }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   return (
     <View style={styles.detailStat}>
       <Text style={[styles.detailStatValue, light && styles.lightDetailValue]}>{value}</Text>
@@ -212,41 +224,45 @@ function DetailStat({ value, label, light = false }: { value: string; label: str
   );
 }
 
-function PerformanceRow({ label, value, max, suffix = '', color = colors.green }: { label: string; value: number; max: number; suffix?: string; color?: string }) {
+function PerformanceRow({ label, value, max, suffix = '', color }: { label: string; value: number; max: number; suffix?: string; color?: string }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const width = `${Math.min(100, max > 0 ? (value / max) * 100 : 0)}%` as `${number}%`;
   return (
     <View style={styles.performanceRow}>
       <View style={styles.performanceLabel}><Text style={styles.performanceName}>{label}</Text><Text style={styles.performanceValue}>{value}{suffix}</Text></View>
-      <View style={styles.track}><View style={[styles.fill, { width, backgroundColor: color }]} /></View>
+      <View style={styles.track}><View style={[styles.fill, { width, backgroundColor: color ?? colors.green }]} /></View>
     </View>
   );
 }
 
-function InfoRow({ label, value, valueColor = colors.ink }: { label: string; value: string; valueColor?: string }) {
+function InfoRow({ label, value, valueColor }: { label: string; value: string; valueColor?: string }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   return (
     <View style={styles.infoRow}>
       <Text style={styles.infoLabel}>{label}</Text>
-      <Text style={[styles.infoValue, { color: valueColor }]}>{value}</Text>
+      <Text style={[styles.infoValue, { color: valueColor ?? colors.ink }]}>{value}</Text>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemePalette) => StyleSheet.create({
   back: { flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start', marginTop: 1, marginBottom: -4 },
   backArrow: { color: colors.green, fontSize: 24, lineHeight: 24 },
   backText: { color: colors.green, fontSize: 11, fontWeight: '800' },
   teamHero: { borderRadius: 22, padding: 20, gap: 10 },
   teamHeroTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  lightEyebrow: { color: '#FFFFFFC7' },
+  lightEyebrow: { color: '#FFFFFFD9' },
   bigMonogram: { color: '#FFFFFF55', fontSize: 25, fontWeight: '900' },
   lightHeading: { color: '#FFFFFF', fontSize: 25 },
-  lightMeta: { color: '#FFFFFFD9', fontSize: 11 },
+  lightMeta: { color: '#FFFFFFE8', fontSize: 11 },
   teamStats: { flexDirection: 'row', gap: 28, paddingTop: 13, marginTop: 5, borderTopWidth: 1, borderTopColor: '#ffffff35' },
   detailStat: { gap: 4, alignItems: 'center' },
   detailStatValue: { color: colors.ink, fontSize: 18, fontWeight: '900' },
   detailStatLabel: { color: colors.muted, fontSize: 7, fontWeight: '900', letterSpacing: 0.6 },
   lightDetailValue: { color: '#FFFFFF', fontSize: 17 },
-  lightDetailLabel: { color: '#FFFFFFC7' },
+  lightDetailLabel: { color: '#FFFFFFD9' },
   section: { gap: 13 },
   playerItem: { flexDirection: 'row', alignItems: 'center', gap: 11, padding: 12 },
   playerName: { color: colors.ink, fontSize: 12, fontWeight: '800' },

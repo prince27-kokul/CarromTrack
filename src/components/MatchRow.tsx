@@ -2,10 +2,12 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Match, getMatchResult, getTeamName, Team } from '../data/seed';
 import { formatDate } from '../data/format';
-import { colors } from '../theme';
+import { ThemePalette, useAppTheme } from '../theme';
 import { AppText as Text } from './AppText';
 
 export function MatchRow({ match, teams, onPress }: { match: Match; teams: Team[]; onPress: () => void }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const result = getMatchResult(match);
   const teamName = getTeamName(teams, match.teamId);
   const outcome = result === 'upcoming'
@@ -42,7 +44,7 @@ export function MatchRow({ match, teams, onPress }: { match: Match; teams: Team[
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemePalette) => StyleSheet.create({
   row: { minHeight: 72, flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: colors.line },
   dateBlock: { width: 43, height: 45, borderRadius: 12, backgroundColor: colors.background, alignItems: 'center', justifyContent: 'center' },
   dateDay: { color: colors.ink, fontSize: 16, fontWeight: '800', lineHeight: 19 },
@@ -54,5 +56,5 @@ const styles = StyleSheet.create({
   scoreBlock: { alignItems: 'flex-end', minWidth: 49, gap: 3 },
   score: { color: colors.ink, fontSize: 13, fontWeight: '800' },
   outcome: { fontSize: 8, fontWeight: '900', letterSpacing: 0.6 },
-  chevron: { color: '#AAB3AE', fontSize: 20, marginLeft: -4 },
+  chevron: { color: colors.muted, fontSize: 20, marginLeft: -4 },
 });

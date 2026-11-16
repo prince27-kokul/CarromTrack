@@ -3,9 +3,11 @@ import { StyleSheet, View } from 'react-native';
 import { AppText as Text } from '../components/AppText';
 import { AppData, getMatchResult } from '../data/seed';
 import { Card, Eyebrow, Heading, Page, SectionTitle } from '../components/ui';
-import { colors } from '../theme';
+import { ThemePalette, useAppTheme } from '../theme';
 
 export function InsightsScreen({ data }: { data: AppData }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const played = data.matches.filter((match) => getMatchResult(match) !== 'upcoming');
   const wins = played.filter((match) => getMatchResult(match) === 'win').length;
   const losses = played.filter((match) => getMatchResult(match) === 'loss').length;
@@ -89,6 +91,8 @@ export function InsightsScreen({ data }: { data: AppData }) {
 }
 
 function Metric({ label, value, note, tint }: { label: string; value: string; note: string; tint: string }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   return (
     <Card style={styles.metricCard}>
       <View style={[styles.metricAccent, { backgroundColor: tint }]} />
@@ -99,7 +103,7 @@ function Metric({ label, value, note, tint }: { label: string; value: string; no
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemePalette) => StyleSheet.create({
   header: { gap: 8, paddingTop: 4 },
   intro: { color: colors.muted, fontSize: 12, lineHeight: 18 },
   metricGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
@@ -141,8 +145,8 @@ const styles = StyleSheet.create({
   star: { color: '#EDC575', fontSize: 18 },
   leaderCopy: { flex: 1, gap: 4 },
   leaderLabel: { color: '#B6C7BE', fontSize: 8, fontWeight: '900', letterSpacing: 0.8 },
-  leaderName: { color: '#FFFFFF', fontSize: 13, fontWeight: '800' },
-  leaderMeta: { color: '#B6C7BE', fontSize: 9 },
+  leaderName: { color: colors.strongText, fontSize: 13, fontWeight: '800' },
+  leaderMeta: { color: '#E2D6EF', fontSize: 9 },
   trophy: { color: '#EDC575', fontSize: 24 },
   footnote: { color: colors.muted, fontSize: 9, textAlign: 'center' },
 });

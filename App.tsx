@@ -10,6 +10,7 @@ import { PlayfairDisplay_600SemiBold } from '@expo-google-fonts/playfair-display
 
 import { AppText as Text } from './src/components/AppText';
 import { TrackerApp } from './src/screens/TrackerApp';
+import { ThemeProvider, useAppTheme } from './src/theme';
 
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({
@@ -21,19 +22,28 @@ export default function App() {
   });
 
   return (
+    <ThemeProvider>
+      <AppShell fontsLoaded={fontsLoaded} fontError={fontError} />
+    </ThemeProvider>
+  );
+}
+
+function AppShell({ fontsLoaded, fontError }: { fontsLoaded: boolean; fontError: Error | null }) {
+  const { colors } = useAppTheme();
+  const styles = StyleSheet.create({
+    safeArea: { flex: 1, backgroundColor: colors.background },
+    message: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 28, gap: 12, backgroundColor: colors.background },
+    messageBody: { color: colors.muted, fontSize: 12, lineHeight: 19, textAlign: 'center' },
+  });
+
+  return (
     <SafeAreaView style={styles.safeArea}>
       {fontsLoaded || fontError ? <TrackerApp /> : (
         <View style={styles.message}>
-          <ActivityIndicator color="#B65CFF" size="large" />
+          <ActivityIndicator color={colors.green} size="large" />
           <Text style={styles.messageBody}>{fontError ? 'Typography could not be loaded.' : 'Preparing Carrom Tracker…'}</Text>
         </View>
       )}
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  safeArea: { flex: 1 },
-  message: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 28, gap: 12 },
-  messageBody: { color: '#B1A8BF', fontSize: 12, lineHeight: 19, textAlign: 'center' },
-});

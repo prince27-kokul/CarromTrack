@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 
 import { AppText as Text } from '../components/AppText';
 import { BottomNav, TabKey } from '../components/BottomNav';
@@ -11,11 +12,14 @@ import { OverviewScreen } from './OverviewScreen';
 import { PlayersScreen } from './PlayersScreen';
 import { TeamsScreen } from './TeamsScreen';
 import { loadAppData, saveAppData } from '../storage/localStore';
-import { colors } from '../theme';
+import { ThemePalette, useAppTheme } from '../theme';
+import { ThemeToggle } from '../components/ThemeToggle';
 
 type DraftMatch = Omit<Match, 'id'>;
 
 export function TrackerApp() {
+  const { colors, mode } = useAppTheme();
+  const styles = createStyles(colors);
   const [data, setData] = useState<AppData | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
@@ -63,6 +67,8 @@ export function TrackerApp() {
   if (loading) {
     return (
       <View style={styles.state}>
+        <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
+        <View style={styles.stateToggle}><ThemeToggle /></View>
         <ActivityIndicator color={colors.green} size="large" />
         <Text style={styles.stateMessage}>Loading your season…</Text>
       </View>
@@ -72,6 +78,8 @@ export function TrackerApp() {
   if (!data) {
     return (
       <View style={styles.state}>
+        <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
+        <View style={styles.stateToggle}><ThemeToggle /></View>
         <Text style={styles.errorTitle}>Season data unavailable</Text>
         <Text style={styles.stateMessage}>{loadError}</Text>
         <Pressable onPress={() => setRetry((value) => value + 1)} style={styles.retry} accessibilityRole="button">
@@ -108,6 +116,7 @@ export function TrackerApp() {
 
   return (
     <View style={[styles.root, desktop && styles.desktopRoot]}>
+      <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
       {desktop ? <BottomNav active={activeTab} onSelect={selectTab} variant="sidebar" /> : null}
       <View style={styles.main}>
         {desktop ? (
@@ -117,9 +126,13 @@ export function TrackerApp() {
               <Text style={styles.breadcrumbSlash}>/</Text>
               <Text style={styles.topbarSection}>{detail ? 'Record details' : activeTab}</Text>
             </View>
-            <View style={styles.savedBadge}><View style={styles.savedDot} /><Text style={styles.savedText}>SAVED ON THIS DEVICE</Text></View>
+            <View style={styles.topbarActions}>
+              <View style={styles.savedBadge}><View style={styles.savedDot} /><Text style={styles.savedText}>SAVED ON THIS DEVICE</Text></View>
+              <ThemeToggle />
+            </View>
           </View>
         ) : null}
+        {!desktop ? <View style={styles.mobileTopbar}><Text style={styles.mobileLabel}>CARROMTRACK</Text><ThemeToggle /></View> : null}
         <View style={styles.screenArea}>
           <View pointerEvents="none" style={styles.ambientGlow} />
           {screen}
@@ -130,11 +143,11 @@ export function TrackerApp() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemePalette) => StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.background },
   desktopRoot: { flexDirection: 'row' },
   main: { flex: 1, minWidth: 0, minHeight: 0, backgroundColor: colors.background },
-  topbar: { height: 68, paddingHorizontal: 34, borderBottomWidth: 1, borderBottomColor: colors.line, backgroundColor: '#0E0A16', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  topbar: { minHeight: 68, paddingHorizontal: 34, borderBottomWidth: 1, borderBottomColor: colors.line, backgroundColor: colors.surface, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   breadcrumb: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   topbarSeason: { color: colors.navMuted, fontSize: 9, fontWeight: '900', letterSpacing: 1.1 },
   breadcrumbSlash: { color: colors.line, fontSize: 14 },
@@ -142,12 +155,16 @@ const styles = StyleSheet.create({
   savedBadge: { height: 30, flexDirection: 'row', alignItems: 'center', gap: 7, paddingHorizontal: 11, borderWidth: 1, borderColor: colors.line, borderRadius: 10, backgroundColor: colors.surface },
   savedDot: { width: 6, height: 6, borderRadius: 4, backgroundColor: colors.goldBright },
   savedText: { color: colors.muted, fontSize: 8, fontWeight: '900', letterSpacing: 0.6 },
+  topbarActions: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  mobileTopbar: { minHeight: 57, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 18, borderBottomWidth: 1, borderBottomColor: colors.line, backgroundColor: colors.surface },
+  mobileLabel: { color: colors.muted, fontSize: 9, fontWeight: '900', letterSpacing: 1.2 },
   screenArea: { flex: 1, minHeight: 0, overflow: 'hidden', backgroundColor: colors.background },
-  ambientGlow: { position: 'absolute', top: -165, right: -70, width: 360, height: 300, borderRadius: 200, backgroundColor: '#4C1D79', opacity: 0.11, shadowColor: '#A146FF', shadowOpacity: 0.7, shadowRadius: 80, elevation: 3 },
+  ambientGlow: { position: 'absolute', top: -165, right: -70, width: 360, height: 300, borderRadius: 200, backgroundColor: colors.green, opacity: colors.background === '#0B0812' ? 0.11 : 0.05, shadowColor: colors.green, shadowOpacity: 0.3, shadowRadius: 80, elevation: 3 },
   content: { flex: 1, minHeight: 0 },
   state: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 14, padding: 28, backgroundColor: colors.background },
+  stateToggle: { position: 'absolute', top: 16, right: 16 },
   stateMessage: { color: colors.muted, fontSize: 12, lineHeight: 19, textAlign: 'center' },
   errorTitle: { color: colors.ink, fontSize: 18, fontWeight: '800', textAlign: 'center' },
   retry: { minHeight: 42, borderRadius: 13, backgroundColor: colors.green, paddingHorizontal: 20, alignItems: 'center', justifyContent: 'center' },
-  retryText: { color: '#FFFFFF', fontSize: 12, fontWeight: '800' },
+  retryText: { color: colors.onAccent, fontSize: 12, fontWeight: '800' },
 });

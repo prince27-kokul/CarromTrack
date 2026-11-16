@@ -12,7 +12,7 @@ import { AppData, Match, getMatchResult, getTeamName } from '../data/seed';
 import { AppText as Text } from '../components/AppText';
 import { MatchRow } from '../components/MatchRow';
 import { Body, Card, Chip, Eyebrow, Heading, Page, PrimaryButton, SearchField } from '../components/ui';
-import { colors } from '../theme';
+import { ThemePalette, useAppTheme } from '../theme';
 
 type MatchFilter = 'All' | 'Upcoming' | 'Played';
 type DraftMatch = Omit<Match, 'id'>;
@@ -22,6 +22,8 @@ export function MatchesScreen({ data, onOpenMatch, onAddMatch }: {
   onOpenMatch: (id: string) => void;
   onAddMatch: (match: DraftMatch) => Promise<boolean>;
 }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<MatchFilter>('All');
   const [modalVisible, setModalVisible] = useState(false);
@@ -173,6 +175,8 @@ export function MatchesScreen({ data, onOpenMatch, onAddMatch }: {
 }
 
 function Field({ label, value, onChangeText, placeholder }: { label: string; value: string; onChangeText: (value: string) => void; placeholder: string }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   return (
     <View style={styles.field}>
       <Text style={styles.label}>{label}</Text>
@@ -181,7 +185,7 @@ function Field({ label, value, onChangeText, placeholder }: { label: string; val
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemePalette) => StyleSheet.create({
   header: { gap: 7, paddingTop: 4 },
   titleRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   filters: { flexDirection: 'row', gap: 8 },
@@ -192,7 +196,7 @@ const styles = StyleSheet.create({
   empty: { alignItems: 'center', gap: 9, paddingVertical: 27 },
   emptyIcon: { color: colors.green, fontSize: 28 },
   emptyTitle: { color: colors.ink, fontSize: 15, fontWeight: '800' },
-  modalBackdrop: { flex: 1, backgroundColor: '#14231FCC', justifyContent: 'flex-end' },
+  modalBackdrop: { flex: 1, backgroundColor: colors.overlay, justifyContent: 'flex-end' },
   modalCard: { maxHeight: '92%', backgroundColor: colors.background, borderTopLeftRadius: 24, borderTopRightRadius: 24, paddingTop: 22, paddingHorizontal: 20, paddingBottom: 25 },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
   modalTitle: { color: colors.ink, fontSize: 22, fontWeight: '800', marginTop: 4 },

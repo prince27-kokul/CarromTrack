@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { colors } from '../theme';
+import { ThemePalette, useAppTheme } from '../theme';
 import { AppText as Text } from './AppText';
 
 export type TabKey = 'Overview' | 'Teams' | 'Players' | 'Matches' | 'Insights';
@@ -14,6 +14,8 @@ const tabs: { key: TabKey; icon: string }[] = [
 ];
 
 export function BottomNav({ active, onSelect, variant = 'bottom' }: { active: TabKey; onSelect: (tab: TabKey) => void; variant?: 'bottom' | 'sidebar' }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   if (variant === 'sidebar') {
     return (
       <View style={styles.sidebar}>
@@ -78,11 +80,11 @@ export function BottomNav({ active, onSelect, variant = 'bottom' }: { active: Ta
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemePalette) => StyleSheet.create({
   sidebar: {
     width: 250,
     flexShrink: 0,
-    backgroundColor: '#100B1A',
+    backgroundColor: colors.surface,
     borderRightWidth: 1,
     borderRightColor: colors.line,
     paddingHorizontal: 18,
@@ -90,7 +92,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   brand: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 7, paddingBottom: 34 },
-  brandMark: { width: 42, height: 42, borderRadius: 14, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.greenDark, borderWidth: 1, borderColor: '#B57AFF70' },
+  brandMark: { width: 42, height: 42, borderRadius: 14, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.greenDark, borderWidth: 1, borderColor: colors.accentBorder },
   brandMarkText: { color: colors.goldBright, fontSize: 22, fontWeight: '800' },
   brandName: { color: colors.ink, fontSize: 14, fontWeight: '900', letterSpacing: 0.4 },
   brandAccent: { color: colors.goldBright },
@@ -98,7 +100,7 @@ const styles = StyleSheet.create({
   navHeading: { color: colors.navMuted, fontSize: 8, fontWeight: '900', letterSpacing: 1.4, paddingHorizontal: 11, marginBottom: 10 },
   sidebarItems: { gap: 5 },
   sidebarItem: { height: 48, borderRadius: 13, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, gap: 12, position: 'relative' },
-  sidebarItemSelected: { backgroundColor: '#51218A55', borderWidth: 1, borderColor: '#A56AFF48' },
+  sidebarItemSelected: { backgroundColor: colors.accentSoft, borderWidth: 1, borderColor: colors.accentBorder },
   sidebarIcon: { color: colors.navMuted, fontSize: 19, width: 23, textAlign: 'center' },
   sidebarIconSelected: { color: colors.goldBright },
   sidebarLabel: { color: colors.navMuted, fontSize: 12, fontWeight: '700' },
@@ -128,6 +130,6 @@ const styles = StyleSheet.create({
   icon: { color: colors.navMuted, fontSize: 21, lineHeight: 26 },
   selectedIcon: { color: colors.green, fontWeight: '800' },
   label: { color: colors.navMuted, fontSize: 9, fontWeight: '700' },
-  selectedLabel: { color: '#D8B9FF' },
+  selectedLabel: { color: colors.ink },
   dot: { position: 'absolute', top: -6, width: 23, height: 3, borderRadius: 2, backgroundColor: colors.green },
 });

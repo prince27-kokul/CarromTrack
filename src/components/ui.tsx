@@ -11,10 +11,12 @@ import {
   ViewStyle,
 } from 'react-native';
 
-import { colors } from '../theme';
+import { ThemePalette, useAppTheme } from '../theme';
 import { AppText as Text, DisplayText } from './AppText';
 
 export function Page({ children, contentStyle }: { children: ReactNode; contentStyle?: StyleProp<ViewStyle> }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const { width } = useWindowDimensions();
   const desktop = width >= 980;
   return (
@@ -30,22 +32,32 @@ export function Page({ children, contentStyle }: { children: ReactNode; contentS
 }
 
 export function Eyebrow({ children, style }: { children: ReactNode; style?: StyleProp<TextStyle> }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   return <Text style={[styles.eyebrow, style]}>{children}</Text>;
 }
 
 export function Heading({ children, style }: { children: ReactNode; style?: StyleProp<TextStyle> }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   return <DisplayText style={[styles.heading, style]}>{children}</DisplayText>;
 }
 
 export function Body({ children, style }: { children: ReactNode; style?: StyleProp<TextStyle> }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   return <Text style={[styles.body, style]}>{children}</Text>;
 }
 
 export function Card({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   return <View style={[styles.card, style]}>{children}</View>;
 }
 
 export function SectionTitle({ title, action, onAction }: { title: string; action?: string; onAction?: () => void }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   return (
     <View style={styles.sectionTitle}>
       <Text style={styles.sectionHeading}>{title}</Text>
@@ -59,6 +71,8 @@ export function SectionTitle({ title, action, onAction }: { title: string; actio
 }
 
 export function SearchField({ value, onChangeText, placeholder }: { value: string; onChangeText: (value: string) => void; placeholder: string }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   return (
     <View style={styles.search}>
       <Text style={styles.searchIcon}>⌕</Text>
@@ -81,6 +95,8 @@ export function SearchField({ value, onChangeText, placeholder }: { value: strin
 }
 
 export function Chip({ label, selected, onPress }: { label: string; selected: boolean; onPress: () => void }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   return (
     <Pressable
       onPress={onPress}
@@ -94,6 +110,8 @@ export function Chip({ label, selected, onPress }: { label: string; selected: bo
 }
 
 export function Initials({ name, color, size = 46 }: { name: string; color: string; size?: number }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const initials = name
     .split(' ')
     .filter(Boolean)
@@ -109,6 +127,8 @@ export function Initials({ name, color, size = 46 }: { name: string; color: stri
 }
 
 export function PrimaryButton({ label, onPress, compact = false }: { label: string; onPress: () => void; compact?: boolean }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   return (
     <Pressable style={[styles.button, compact && styles.buttonCompact]} onPress={onPress} accessibilityRole="button">
       <Text style={styles.buttonText}>{label}</Text>
@@ -117,6 +137,8 @@ export function PrimaryButton({ label, onPress, compact = false }: { label: stri
 }
 
 export function EmptyState({ title, message }: { title: string; message: string }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   return (
     <Card style={styles.empty}>
       <Text style={styles.emptyIcon}>◎</Text>
@@ -126,7 +148,7 @@ export function EmptyState({ title, message }: { title: string; message: string 
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemePalette) => StyleSheet.create({
   scroll: { flex: 1, backgroundColor: colors.background },
   page: { paddingHorizontal: 21, paddingTop: 18, paddingBottom: 30, gap: 21 },
   desktopScroll: { backgroundColor: 'transparent' },
@@ -154,7 +176,7 @@ const styles = StyleSheet.create({
   searchInput: { flex: 1, paddingVertical: 0, color: colors.ink, fontSize: 14 },
   clearSearch: { color: colors.muted, fontSize: 23, lineHeight: 25, paddingLeft: 4 },
   chip: { borderWidth: 1, borderColor: colors.line, borderRadius: 20, backgroundColor: colors.surface, paddingVertical: 8, paddingHorizontal: 14 },
-  chipSelected: { backgroundColor: colors.navy, borderColor: colors.navy },
+  chipSelected: { backgroundColor: colors.green, borderColor: colors.green },
   chipText: { color: colors.muted, fontSize: 11, fontWeight: '700' },
   chipTextSelected: { color: '#FFFFFF' },
   initials: { alignItems: 'center', justifyContent: 'center' },
@@ -173,7 +195,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   buttonCompact: { minHeight: 40, paddingHorizontal: 14, borderRadius: 12 },
-  buttonText: { color: '#FFFFFF', fontSize: 13, fontWeight: '800' },
+  buttonText: { color: colors.onAccent, fontSize: 13, fontWeight: '800' },
   empty: { alignItems: 'center', paddingVertical: 28, gap: 8 },
   emptyIcon: { color: colors.green, fontSize: 28 },
   emptyTitle: { color: colors.ink, fontWeight: '800', fontSize: 15 },

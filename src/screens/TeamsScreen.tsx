@@ -4,9 +4,11 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { AppText as Text } from '../components/AppText';
 import { AppData, getMatchResult } from '../data/seed';
 import { Body, Card, Eyebrow, Heading, Page, SearchField } from '../components/ui';
-import { colors } from '../theme';
+import { ThemePalette, useAppTheme } from '../theme';
 
 export function TeamsScreen({ data, onOpenTeam }: { data: AppData; onOpenTeam: (id: string) => void }) {
+  const { colors } = useAppTheme();
+  const styles = createStyles(colors);
   const [search, setSearch] = useState('');
   const teams = useMemo(() => data.teams.filter((team) => `${team.name} ${team.city}`.toLowerCase().includes(search.trim().toLowerCase())), [data.teams, search]);
 
@@ -58,7 +60,7 @@ export function TeamsScreen({ data, onOpenTeam }: { data: AppData; onOpenTeam: (
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: ThemePalette) => StyleSheet.create({
   header: { gap: 7, paddingTop: 4 },
   summary: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: -7 },
   summaryText: { color: colors.muted, fontSize: 9, fontWeight: '900', letterSpacing: 0.9 },
@@ -79,7 +81,7 @@ const styles = StyleSheet.create({
   metricSub: { color: colors.muted, fontSize: 9, fontWeight: '600' },
   metricLabel: { color: colors.muted, fontSize: 8, fontWeight: '800', letterSpacing: 0.7 },
   rosterPreview: { flexDirection: 'row', alignItems: 'center', paddingTop: 1 },
-  avatar: { width: 27, height: 27, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: '#FFFFFF' },
+  avatar: { width: 27, height: 27, borderRadius: 14, alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: colors.surface },
   avatarText: { fontSize: 8, fontWeight: '900' },
   rosterLabel: { color: colors.muted, fontSize: 10, marginLeft: 9, fontWeight: '600' },
 });
