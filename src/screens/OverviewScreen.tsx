@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View, useWindowDimensions } from 'react-native';
 
 import { AppData, getMatchResult, getTeamName } from '../data/seed';
 import { formatDate } from '../data/format';
@@ -17,6 +17,8 @@ export function OverviewScreen({ data, onTab, onOpenMatch, onOpenPlayer }: {
   onOpenMatch: (id: string) => void;
   onOpenPlayer: (id: string) => void;
 }) {
+  const { width } = useWindowDimensions();
+  const wide = width >= 1250;
   const homeTeam = data.teams.find((team) => team.id === HOME_TEAM_ID) ?? data.teams[0];
   const teamMatches = data.matches.filter((match) => match.teamId === homeTeam?.id);
   const played = teamMatches.filter((match) => getMatchResult(match) !== 'upcoming');
@@ -39,6 +41,8 @@ export function OverviewScreen({ data, onTab, onOpenMatch, onOpenPlayer }: {
         <View style={styles.profile}><Text style={styles.profileText}>CT</Text></View>
       </View>
 
+      <View style={[styles.dashboardColumns, wide && styles.dashboardColumnsWide]}>
+      <View style={styles.primaryColumn}>
       <View style={styles.hero}>
         <View style={styles.heroTop}>
           <View>
@@ -82,7 +86,9 @@ export function OverviewScreen({ data, onTab, onOpenMatch, onOpenPlayer }: {
           <Text style={styles.nextMeta}>{formatDate(nextMatch.date)}  ·  {nextMatch.venue}</Text>
         </Pressable>
       ) : null}
+      </View>
 
+      <View style={styles.secondaryColumn}>
       <View style={styles.sectionWrap}>
         <SectionTitle title="Recent fixtures" action="All matches" onAction={() => onTab('Matches')} />
         <Card style={styles.listCard}>
@@ -110,6 +116,8 @@ export function OverviewScreen({ data, onTab, onOpenMatch, onOpenPlayer }: {
           </Pressable>
         </View>
       ) : null}
+      </View>
+      </View>
 
       <Text style={styles.offlineNote}>●  YOUR SEASON DATA IS STORED ON THIS DEVICE</Text>
     </Page>
@@ -118,6 +126,10 @@ export function OverviewScreen({ data, onTab, onOpenMatch, onOpenPlayer }: {
 
 const styles = StyleSheet.create({
   topline: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 4 },
+  dashboardColumns: { gap: 21 },
+  dashboardColumnsWide: { flexDirection: 'row', alignItems: 'flex-start', gap: 24 },
+  primaryColumn: { flex: 1, gap: 21, minWidth: 0 },
+  secondaryColumn: { flex: 0.9, gap: 21, minWidth: 0 },
   greeting: { color: colors.ink, fontSize: 27, lineHeight: 35, fontWeight: '700', letterSpacing: -0.65, marginTop: 6 },
   profile: { width: 44, height: 44, borderRadius: 16, backgroundColor: colors.greenDark, borderWidth: 1, borderColor: '#B57AFF70', alignItems: 'center', justifyContent: 'center' },
   profileText: { color: colors.goldBright, fontWeight: '900', fontSize: 11, letterSpacing: 0.6 },

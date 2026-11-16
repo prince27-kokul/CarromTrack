@@ -1,16 +1,15 @@
 # CarromTrack
 
-CarromTrack is an offline carrom game tracker built with Expo, React Native and TypeScript. This first UI release focuses on the Home and New Game screens, with a responsive desktop dashboard and a compact mobile layout.
+CarromTrack is an offline carrom season tracker built with Expo, React Native and TypeScript. Browse the season overview, teams, players, matches and insights, and open team, player or match details.
 
 ## Screens
 
-- **Home:** performance summary, carrom board illustration and a shortcut to game setup.
-- **New Game:** choose players and game type, and set a target score.
-- **Appearance:** switch between dark and light themes; the selection is saved on the device.
+- **Overview:** season performance, upcoming fixtures and recent results.
+- **Teams and Players:** search and browse squads and their rosters.
+- **Matches:** filter fixtures, open match details and add a fixture with an optional score.
+- **Insights:** season standings and match statistics.
 
-The Live Game, Statistics, History and Profile screens are not part of this first UI release.
-
-Match statistics are saved locally with AsyncStorage. The project does not use a remote API.
+Season data, including newly added fixtures, is saved locally with AsyncStorage. The project does not use a remote API.
 
 ## Run the app
 
