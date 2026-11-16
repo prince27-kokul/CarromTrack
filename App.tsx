@@ -9,7 +9,7 @@ import {
 import { PlayfairDisplay_600SemiBold } from '@expo-google-fonts/playfair-display';
 
 import { AppText as Text } from './src/components/AppText';
-import { ShowcaseApp } from './src/screens/ShowcaseApp';
+import { TrackerApp } from './src/screens/TrackerApp';
 
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({
@@ -22,7 +22,7 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {fontsLoaded ? <ShowcaseApp /> : (
+      {fontsLoaded || fontError ? <TrackerApp /> : (
         <View style={styles.message}>
           <ActivityIndicator color="#B65CFF" size="large" />
           <Text style={styles.messageBody}>{fontError ? 'Typography could not be loaded.' : 'Preparing Carrom Tracker…'}</Text>

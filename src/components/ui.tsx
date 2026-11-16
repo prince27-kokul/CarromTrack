@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TextInput,
   TextStyle,
+  useWindowDimensions,
   View,
   ViewStyle,
 } from 'react-native';
@@ -14,10 +15,12 @@ import { colors } from '../theme';
 import { AppText as Text, DisplayText } from './AppText';
 
 export function Page({ children, contentStyle }: { children: ReactNode; contentStyle?: StyleProp<ViewStyle> }) {
+  const { width } = useWindowDimensions();
+  const desktop = width >= 980;
   return (
     <ScrollView
-      style={styles.scroll}
-      contentContainerStyle={[styles.page, contentStyle]}
+      style={[styles.scroll, desktop && styles.desktopScroll]}
+      contentContainerStyle={[styles.page, desktop && styles.desktopPage, contentStyle]}
       showsVerticalScrollIndicator={false}
       keyboardShouldPersistTaps="handled"
     >
@@ -126,6 +129,8 @@ export function EmptyState({ title, message }: { title: string; message: string 
 const styles = StyleSheet.create({
   scroll: { flex: 1, backgroundColor: colors.background },
   page: { paddingHorizontal: 21, paddingTop: 18, paddingBottom: 30, gap: 21 },
+  desktopScroll: { backgroundColor: 'transparent' },
+  desktopPage: { width: '100%', maxWidth: 1320, alignSelf: 'center', paddingHorizontal: 38, paddingTop: 32, paddingBottom: 46, gap: 25 },
   eyebrow: { color: colors.muted, fontSize: 9, fontWeight: '800', letterSpacing: 1.6 },
   heading: { color: colors.ink, fontSize: 29, lineHeight: 36, fontWeight: '600', letterSpacing: -0.7 },
   body: { color: colors.muted, fontSize: 13, lineHeight: 20 },
